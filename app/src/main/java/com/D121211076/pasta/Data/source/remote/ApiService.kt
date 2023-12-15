@@ -7,7 +7,7 @@ import retrofit2.http.Query
 interface ApiService {
     //https://www.themealdb.com/api/json/v1/1/filter.php?c=Pasta
 
-    @GET("api/json/v1/1/filter")
+    @GET("api/json/v1/1/filter.php")
     suspend fun getPasta(
         @Query("c") c: String
     ): GetPastaResponse

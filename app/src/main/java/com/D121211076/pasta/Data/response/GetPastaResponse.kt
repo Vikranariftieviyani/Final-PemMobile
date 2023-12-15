@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class GetPastaResponse(
     @SerialName("meals")
-    val meals: Article?
+    val meals: List<Article>?
 )

@@ -8,10 +8,7 @@ import kotlinx.serialization.Serializable
 @Parcelize
 @Serializable
 data class Article(
-    @SerialName("strMeal")
     val strMeal: String?,
-    @SerialName("strMealThumb")
     val strMealThumb: String?,
-    @SerialName("idMeal")
     val idMeal: String?
 ) : Parcelable
