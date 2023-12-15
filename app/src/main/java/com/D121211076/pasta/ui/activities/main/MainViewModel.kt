@@ -1,4 +1,4 @@
-package com.D121211076.pasta.ui.screen.main
+package com.D121211076.pasta.ui.activities.main
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -10,37 +10,40 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.D121211076.pasta.Data.models.Article
 import com.D121211076.pasta.MyApplication
 import com.D121211076.pasta.Data.repository.PastaRepository
+import com.D121211076.pasta.Data.response.GetPastaResponse
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 
 sealed interface MainUiState {
-    data class Success(val pasta: Pasta) : MainUiState
+    data class Success(val pasta: Article?) : MainUiState
     object Error : MainUiState
     object Loading : MainUiState
 }
 
-class MainViewModel(private val PastaRepository: PastaRepository): ViewModel() {
+class MainViewModel(private val pastaRepository: PastaRepository): ViewModel() {
 
     var mainUiState: MainUiState by mutableStateOf(MainUiState.Loading)
         private set
 
-    fun getPasta() = viewModelScope.launch {
-        mainUiState = MainUiState.Loading
-        try {
-            val result = PastaRepository.getPasta(
-                q = "pemilu",
-                from = "2023-10-15",
-                sortBy = "publishedAt"
-            )
-            Log.d("MainViewModel", "getPasta: ${result.articles?.size}")
-            mainUiState = MainUiState.Success(result.articles.orEmpty())
-        } catch (e: IOException) {
-            Log.d("MainViewMode", "getPasta error: ${e.message}")
-            mainUiState = MainUiState.Error
+    private fun getPasta() = viewModelScope.launch {
+            mainUiState = MainUiState.Loading
+            try {
+                val result = pastaRepository.getPasta(
+                    c = "Pasta"
+                )
+                mainUiState = MainUiState.Success(result.meals)
+                Log.d("MainViewModel", "getPasta success : ${result.meals}")
+            } catch (e: IOException) {
+                MainUiState.Error
+            } catch (e: HttpException) {
+                MainUiState.Error
+            }
         }
-    }
+
 
     init {
         getPasta()
@@ -50,8 +53,8 @@ class MainViewModel(private val PastaRepository: PastaRepository): ViewModel() {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as MyApplication)
-                val PastaRepository = application.container.PastaRepository
-                MainViewModel(PastaRepository)
+                val pastaRepository = application.container.pastaRepository
+                MainViewModel(pastaRepository)
             }
         }
     }

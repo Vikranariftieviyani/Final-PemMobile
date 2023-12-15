@@ -9,9 +9,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Article(
     @SerialName("strMeal")
-    val author: String?,
+    val strMeal: String?,
     @SerialName("strMealThumb")
-    val content: String?,
+    val strMealThumb: String?,
     @SerialName("idMeal")
-    val description: String?
+    val idMeal: String?
 ) : Parcelable

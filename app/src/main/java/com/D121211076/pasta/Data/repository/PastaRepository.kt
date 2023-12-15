@@ -8,5 +8,4 @@ class PastaRepository(private val apiService: ApiService) {
     suspend fun getPasta(c: String): GetPastaResponse {
         return apiService.getPasta(c)
     }
-
 }
